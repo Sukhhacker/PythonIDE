@@ -11,6 +11,16 @@ buildscript {
     }
 }
 
+// ✅ IMPORTANT: add this back (CI fix)
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://chaquo.com/maven" }
+        maven { url "https://jitpack.io" }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
