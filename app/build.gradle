@@ -54,14 +54,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // ✅ FIXED - Working editor dependency (CORRECT GROUP ID)
+    // ✅ FIXED - Only core editor (NO language-textmate)
     implementation 'io.github.rosemoe:editor:0.24.4'
     
-    // ✅ Add BOM for better compatibility
-    implementation(platform('io.github.rosemoe:editor-bom:0.24.4'))
-    
-    // ✅ Editor language textmate support (optional but recommended)
-    implementation 'io.github.rosemoe:editor-language-textmate:0.24.4'
+    // ✅ BOM for version management
+    implementation platform('io.github.rosemoe:editor-bom:0.24.4')
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 }
