@@ -54,11 +54,14 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // ✅ Editor alternative (WORKING - Maven Central)
-    implementation 'io.github.rosemoe.sora-editor:editor:0.21.1'
-
-    // ❌ REMOVE SimpleStorage (problematic)
-    // use normal file APIs instead
+    // ✅ FIXED - Working editor dependency (CORRECT GROUP ID)
+    implementation 'io.github.rosemoe:editor:0.24.4'
+    
+    // ✅ Add BOM for better compatibility
+    implementation(platform('io.github.rosemoe:editor-bom:0.24.4'))
+    
+    // ✅ Editor language textmate support (optional but recommended)
+    implementation 'io.github.rosemoe:editor-language-textmate:0.24.4'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 }
