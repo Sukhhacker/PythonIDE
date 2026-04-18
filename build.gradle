@@ -3,21 +3,10 @@ buildscript {
         google()
         mavenCentral()
         maven { url "https://chaquo.com/maven" }
-        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:8.1.0"
         classpath "com.chaquo.python:gradle:15.0.1"
-    }
-}
-
-// ✅ IMPORTANT: add this back (CI fix)
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://chaquo.com/maven" }
-        maven { url "https://jitpack.io" }
     }
 }
 
