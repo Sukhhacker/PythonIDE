@@ -1,4 +1,5 @@
-name: Build APK
+- name: Build APK
+  run: ./gradlew clean assembleDebug --refresh-dependencies
 
 on:
   push:
