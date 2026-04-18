@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_save"
+        android:title="Save"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_run"
+        android:icon="@drawable/ic_play"
+        android:title="Run"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_undo"
+        android:icon="@drawable/ic_undo"
+        android:title="Undo"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_redo"
+        android:icon="@drawable/ic_redo"
+        android:title="Redo"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_find"
+        android:icon="@drawable/ic_search"
+        android:title="Find"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_save_as"
+        android:title="Save As" />
+</menu>

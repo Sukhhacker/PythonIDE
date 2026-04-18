@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_files"
+        android:icon="@drawable/ic_folder"
+        android:title="Files" />
+    <item
+        android:id="@+id/nav_new"
+        android:icon="@drawable/ic_add"
+        android:title="New" />
+    <item
+        android:id="@+id/nav_pip"
+        android:icon="@drawable/ic_pip"
+        android:title="Pip" />
+    <item
+        android:id="@+id/nav_console"
+        android:icon="@drawable/ic_console"
+        android:title="Console" />
+</menu>
