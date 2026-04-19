@@ -3,13 +3,11 @@ package com.pythonide.editor;
 import io.github.rosemoe.sora.lang.Language;
 import io.github.rosemoe.sora.lang.analysis.Analyzer;
 import io.github.rosemoe.sora.lang.analysis.StyleReceiver;
-import io.github.rosemoe.sora.lang.styling.Span;
-import io.github.rosemoe.sora.lang.styling.TextStyle;
+import io.github.rosemoe.sora.lang.styling.Styles;
 import io.github.rosemoe.sora.text.Content;
 import io.github.rosemoe.sora.text.TextReference;
+import io.github.rosemoe.sora.widget.CodeEditor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +33,24 @@ public class PythonLanguage implements Language {
             "\\bdef\\s+(\\w+)\\s*\\("
     );
     
+    private CodeEditor editor;
+    
+    public PythonLanguage(CodeEditor editor) {
+        this.editor = editor;
+    }
+    
     @Override
-    public Analyzer createAnalyzer(Content content, TextReference textRef, 
-                                   StyleReceiver receiver) {
+    public CodeEditor getEditor() {
+        return editor;
+    }
+    
+    @Override
+    public void setEditor(CodeEditor editor) {
+        this.editor = editor;
+    }
+    
+    @Override
+    public Analyzer createAnalyzer(Content content, TextReference textRef, StyleReceiver receiver) {
         return new PythonAnalyzer(content, receiver);
     }
     
@@ -54,6 +67,34 @@ public class PythonLanguage implements Language {
     @Override
     public void destroy() {
         // Clean up resources
+    }
+    
+    @Override
+    public boolean isAutoCompleteChar(char ch) {
+        return Character.isLetter(ch) || ch == '.' || ch == '_';
+    }
+    
+    @Override
+    public int getIndentAdvance(String text) {
+        if (text.trim().endsWith(":")) {
+            return 4;
+        }
+        return 0;
+    }
+    
+    @Override
+    public boolean useTab() {
+        return false;
+    }
+    
+    @Override
+    public CharSequence format(CharSequence text) {
+        return text;
+    }
+    
+    @Override
+    public Symbol getSymbolAt(int line, int column) {
+        return null;
     }
     
     private class PythonAnalyzer implements Analyzer {
@@ -88,44 +129,44 @@ public class PythonLanguage implements Language {
             
             new Thread(() -> {
                 String text = content.toString();
-                List<Span> spans = new ArrayList<>();
+                Styles styles = new Styles();
                 
                 // Highlight keywords
                 Matcher keywordMatcher = KEYWORD_PATTERN.matcher(text);
                 while (keywordMatcher.find()) {
-                    spans.add(new Span(keywordMatcher.start(), keywordMatcher.end(), 
-                            TextStyle.makeStyle(TextStyle.BOLD, 0xffcc7832, 0)));
+                    styles.addSpan(keywordMatcher.start(), keywordMatcher.end(), 
+                            Styles.BOLD | Styles.FOREGROUND_COLOR, 0xffcc7832);
                 }
                 
                 // Highlight strings
                 Matcher stringMatcher = STRING_PATTERN.matcher(text);
                 while (stringMatcher.find()) {
-                    spans.add(new Span(stringMatcher.start(), stringMatcher.end(),
-                            TextStyle.makeStyle(TextStyle.NORMAL, 0xff6a8759, 0)));
+                    styles.addSpan(stringMatcher.start(), stringMatcher.end(),
+                            Styles.FOREGROUND_COLOR, 0xff6a8759);
                 }
                 
                 // Highlight comments
                 Matcher commentMatcher = COMMENT_PATTERN.matcher(text);
                 while (commentMatcher.find()) {
-                    spans.add(new Span(commentMatcher.start(), commentMatcher.end(),
-                            TextStyle.makeStyle(TextStyle.ITALIC, 0xff808080, 0)));
+                    styles.addSpan(commentMatcher.start(), commentMatcher.end(),
+                            Styles.ITALIC | Styles.FOREGROUND_COLOR, 0xff808080);
                 }
                 
                 // Highlight numbers
                 Matcher numberMatcher = NUMBER_PATTERN.matcher(text);
                 while (numberMatcher.find()) {
-                    spans.add(new Span(numberMatcher.start(), numberMatcher.end(),
-                            TextStyle.makeStyle(TextStyle.NORMAL, 0xff6897bb, 0)));
+                    styles.addSpan(numberMatcher.start(), numberMatcher.end(),
+                            Styles.FOREGROUND_COLOR, 0xff6897bb);
                 }
                 
                 // Highlight function names
                 Matcher functionMatcher = FUNCTION_PATTERN.matcher(text);
                 while (functionMatcher.find()) {
-                    spans.add(new Span(functionMatcher.start(1), functionMatcher.end(1),
-                            TextStyle.makeStyle(TextStyle.NORMAL, 0xffffc66d, 0)));
+                    styles.addSpan(functionMatcher.start(1), functionMatcher.end(1),
+                            Styles.FOREGROUND_COLOR, 0xffffc66d);
                 }
                 
-                receiver.setStyles(this, spans);
+                receiver.setStyles(this, styles);
                 
             }).start();
         }
