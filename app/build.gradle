@@ -47,6 +47,18 @@ android {
     buildFeatures {
         viewBinding false
     }
+    
+    // Add packaging options to avoid conflicts
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 dependencies {
@@ -60,10 +72,9 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     
-    // Sora Editor for syntax highlighting and autocomplete
-    implementation 'io.github.Rosemoe.sora-editor:editor:0.22.2'
-    implementation 'io.github.Rosemoe.sora-editor:language-textmate:0.22.2'
-    implementation 'io.github.Rosemoe.sora-editor:language-python:0.22.2'
+    // Sora Editor - All modules available on Maven Central
+    implementation 'io.github.Rosemoe.sora-editor:editor:0.23.5'
+    implementation 'io.github.Rosemoe.sora-editor:language-textmate:0.23.5'
     
     // Commons IO for file operations
     implementation 'commons-io:commons-io:2.11.0'
