@@ -3,20 +3,18 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven { url "https://chaquo.com/maven" }
-        maven { url "https://jitpack.io" }
     }
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
         maven { url "https://chaquo.com/maven" }
-        maven { url "https://jitpack.io" }
-        maven { url "https://maven.pkg.github.com/rosemoe/sora-editor" }
+        // Remove GitHub Packages since it requires authentication
     }
 }
+
 rootProject.name = "PythonIDE"
-include(":app")
+include ':app'
