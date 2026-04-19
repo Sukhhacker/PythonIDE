@@ -166,7 +166,9 @@ public class PythonLanguage implements Language {
                             TextStyle.makeStyle(TextStyle.NORMAL, 0xffffc66d, 0)));
                 }
                 
-                receiver.setStyles(this, spans);
+                if (receiver != null) {
+                    receiver.setStyles(this, spans);
+                }
                 
             }).start();
         }
