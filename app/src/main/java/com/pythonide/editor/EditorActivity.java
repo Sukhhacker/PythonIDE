@@ -80,55 +80,53 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
     
-    private void setupEditor() {
-        // Set color scheme
-        EditorColorScheme scheme = new SchemeDarcula();
-        editor.setColorScheme(scheme);
+    // In EditorActivity.java, update the setupEditor() method:
+
+private void setupEditor() {
+    // Set color scheme
+    EditorColorScheme scheme = new SchemeDarcula();
+    editor.setColorScheme(scheme);
+    
+    // Setup Python language support with editor instance
+    try {
+        TextMateLanguage language = TextMateLanguage.create(
+                EditorLanguage.PYTHON,
+                getAssets(),
+                "languages/python.tmLanguage.json"
+        );
+        editor.setEditorLanguage(language);
         
-        // Setup Python language support
-        try {
-            TextMateLanguage language = TextMateLanguage.create(
-                    EditorLanguage.PYTHON,
-                    getAssets(),
-                    "languages/python.tmLanguage.json"
-            );
-            editor.setEditorLanguage(language);
-            
-            TextMateColorScheme tmScheme = TextMateColorScheme.create(
-                    getAssets(),
-                    "themes/darcula.json"
-            );
-            editor.setColorScheme(tmScheme);
-            
-        } catch (Exception e) {
-            // Fallback to basic Python syntax highlighting
-            editor.setEditorLanguage(new PythonLanguage());
-        }
+        TextMateColorScheme tmScheme = TextMateColorScheme.create(
+                getAssets(),
+                "themes/darcula.json"
+        );
+        editor.setColorScheme(tmScheme);
         
-        // Setup editor components
-        editor.getProps().tabWidth = 4;
-        editor.getProps().useTab = false;
-        editor.getProps().lineNumberEnabled = true;
-        editor.getProps().pinLineNumber = true;
-        editor.getProps().symbolInputEnabled = true;
-        editor.getProps().wordwrap = false;
-        
-        // Enable autocomplete
-        EditorAutoCompletion autoCompletion = new EditorAutoCompletion(editor);
-        autoCompletion.setEnabled(true);
-        autoCompletion.setAutoCompletionItemsLoader((code, position) -> {
-            // Load autocomplete items
-            return loadCompletionItems(code, position);
-        });
-        editor.setComponent(EditorAutoCompletion.class, autoCompletion);
-        
-        // Enable text actions (copy, paste, etc.)
-        editor.setComponent(EditorTextActionWindow.class, new EditorTextActionWindow(editor));
-        
-        // Additional editor setup
-        editor.setLineSpacing(2f, 1.1f);
-        editor.setTextSize(14);
+    } catch (Exception e) {
+        // Fallback to basic Python syntax highlighting
+        editor.setEditorLanguage(new PythonLanguage(editor));
     }
+    
+    // Rest of the setup remains the same...
+    editor.getProps().tabWidth = 4;
+    editor.getProps().useTab = false;
+    editor.getProps().lineNumberEnabled = true;
+    editor.getProps().pinLineNumber = true;
+    editor.getProps().symbolInputEnabled = true;
+    editor.getProps().wordwrap = false;
+    
+    // Enable autocomplete
+    EditorAutoCompletion autoCompletion = new EditorAutoCompletion(editor);
+    autoCompletion.setEnabled(true);
+    editor.setComponent(EditorAutoCompletion.class, autoCompletion);
+    
+    // Enable text actions
+    editor.setComponent(EditorTextActionWindow.class, new EditorTextActionWindow(editor));
+    
+    // Additional setup
+    editor.setLineSpacing(2f, 1.1f);
+    editor.setTextSize(14);
+}
     
     private List<CompletionItem> loadCompletionItems(String code, int position) {
         List<CompletionItem> items = new ArrayList<>();
