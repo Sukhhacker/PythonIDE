@@ -18,13 +18,14 @@ import com.pythonide.R;
 import com.pythonide.file.FileManager;
 import com.pythonide.python.PythonExecutor;
 
-import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme;
-import io.github.rosemoe.sora.langs.textmate.TextMateLanguage;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.github.rosemoe.sora.widget.CodeEditor;
 import io.github.rosemoe.sora.widget.component.EditorAutoCompletion;
 import io.github.rosemoe.sora.widget.component.EditorTextActionWindow;
-import io.github.rosemoe.sora.widget.schemes.EditorColorScheme;
 import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
+import io.github.rosemoe.sora.lang.completion.CompletionItem;
 
 public class EditorActivity extends AppCompatActivity {
     
@@ -80,86 +81,65 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
     
-    // In EditorActivity.java, update the setupEditor() method:
-
-private void setupEditor() {
-    // Set color scheme
-    EditorColorScheme scheme = new SchemeDarcula();
-    editor.setColorScheme(scheme);
-    
-    // Setup Python language support with editor instance
-    try {
-        TextMateLanguage language = TextMateLanguage.create(
-                EditorLanguage.PYTHON,
-                getAssets(),
-                "languages/python.tmLanguage.json"
-        );
-        editor.setEditorLanguage(language);
+    private void setupEditor() {
+        // Set color scheme
+        editor.setColorScheme(new SchemeDarcula());
         
-        TextMateColorScheme tmScheme = TextMateColorScheme.create(
-                getAssets(),
-                "themes/darcula.json"
-        );
-        editor.setColorScheme(tmScheme);
-        
-    } catch (Exception e) {
-        // Fallback to basic Python syntax highlighting
+        // Use basic Python language syntax highlighting
         editor.setEditorLanguage(new PythonLanguage(editor));
-    }
-    
-    // Rest of the setup remains the same...
-    editor.getProps().tabWidth = 4;
-    editor.getProps().useTab = false;
-    editor.getProps().lineNumberEnabled = true;
-    editor.getProps().pinLineNumber = true;
-    editor.getProps().symbolInputEnabled = true;
-    editor.getProps().wordwrap = false;
-    
-    // Enable autocomplete
-    EditorAutoCompletion autoCompletion = new EditorAutoCompletion(editor);
-    autoCompletion.setEnabled(true);
-    editor.setComponent(EditorAutoCompletion.class, autoCompletion);
-    
-    // Enable text actions
-    editor.setComponent(EditorTextActionWindow.class, new EditorTextActionWindow(editor));
-    
-    // Additional setup
-    editor.setLineSpacing(2f, 1.1f);
-    editor.setTextSize(14);
-}
-    
-    private List<CompletionItem> loadCompletionItems(String code, int position) {
-        List<CompletionItem> items = new ArrayList<>();
         
-        // Python keywords
-        String[] keywords = {
-            "False", "None", "True", "and", "as", "assert", "async", "await",
-            "break", "class", "continue", "def", "del", "elif", "else", "except",
-            "finally", "for", "from", "global", "if", "import", "in", "is",
-            "lambda", "nonlocal", "not", "or", "pass", "raise", "return",
-            "try", "while", "with", "yield"
-        };
+        // Setup editor components
+        editor.getProps().tabWidth = 4;
+        editor.getProps().useTab = false;
+        editor.getProps().lineNumberEnabled = true;
+        editor.getProps().pinLineNumber = true;
+        editor.getProps().symbolInputEnabled = true;
+        editor.getProps().wordwrap = false;
         
-        for (String keyword : keywords) {
-            items.add(new CompletionItem(keyword, "Keyword"));
-        }
+        // Enable autocomplete
+        EditorAutoCompletion autoCompletion = new EditorAutoCompletion(editor);
+        autoCompletion.setEnabled(true);
+        autoCompletion.setAutoCompletionItemsLoader((code, position) -> {
+            List<CompletionItem> items = new ArrayList<>();
+            
+            // Python keywords
+            String[] keywords = {
+                "False", "None", "True", "and", "as", "assert", "async", "await",
+                "break", "class", "continue", "def", "del", "elif", "else", "except",
+                "finally", "for", "from", "global", "if", "import", "in", "is",
+                "lambda", "nonlocal", "not", "or", "pass", "raise", "return",
+                "try", "while", "with", "yield"
+            };
+            
+            for (String keyword : keywords) {
+                items.add(new CompletionItem(keyword, "Keyword"));
+            }
+            
+            // Built-in functions
+            String[] builtins = {
+                "abs", "all", "any", "bin", "bool", "callable", "chr", "dict",
+                "dir", "enumerate", "eval", "exec", "filter", "float", "format",
+                "getattr", "hasattr", "hash", "help", "hex", "id", "input", "int",
+                "isinstance", "issubclass", "iter", "len", "list", "locals", "map",
+                "max", "min", "next", "oct", "open", "ord", "pow", "print",
+                "range", "repr", "reversed", "round", "set", "setattr", "slice",
+                "sorted", "str", "sum", "tuple", "type", "vars", "zip"
+            };
+            
+            for (String builtin : builtins) {
+                items.add(new CompletionItem(builtin, "Built-in function"));
+            }
+            
+            return items;
+        });
+        editor.setComponent(EditorAutoCompletion.class, autoCompletion);
         
-        // Built-in functions
-        String[] builtins = {
-            "abs", "all", "any", "bin", "bool", "callable", "chr", "dict",
-            "dir", "enumerate", "eval", "exec", "filter", "float", "format",
-            "getattr", "hasattr", "hash", "help", "hex", "id", "input", "int",
-            "isinstance", "issubclass", "iter", "len", "list", "locals", "map",
-            "max", "min", "next", "oct", "open", "ord", "pow", "print",
-            "range", "repr", "reversed", "round", "set", "setattr", "slice",
-            "sorted", "str", "sum", "tuple", "type", "vars", "zip"
-        };
+        // Enable text actions
+        editor.setComponent(EditorTextActionWindow.class, new EditorTextActionWindow(editor));
         
-        for (String builtin : builtins) {
-            items.add(new CompletionItem(builtin, "Built-in function"));
-        }
-        
-        return items;
+        // Additional setup
+        editor.setLineSpacing(2f, 1.1f);
+        editor.setTextSize(14);
     }
     
     private void loadFile() {
@@ -225,7 +205,6 @@ private void setupEditor() {
                         if (!fileName.endsWith(".py")) {
                             fileName += ".py";
                         }
-                        // For now, save to Downloads folder
                         java.io.File downloadsDir = 
                                 android.os.Environment.getExternalStoragePublicDirectory(
                                         android.os.Environment.DIRECTORY_DOWNLOADS);
@@ -246,7 +225,6 @@ private void setupEditor() {
             return;
         }
         
-        // Save before running if modified
         if (isModified && currentFilePath != null) {
             saveFile();
         }
@@ -307,10 +285,6 @@ private void setupEditor() {
             return true;
         } else if (itemId == R.id.action_redo) {
             editor.redo();
-            return true;
-        } else if (itemId == R.id.action_find) {
-            editor.getComponent(io.github.rosemoe.sora.widget.component.EditorSearchAction.class)
-                    .showSearchBar();
             return true;
         }
         
