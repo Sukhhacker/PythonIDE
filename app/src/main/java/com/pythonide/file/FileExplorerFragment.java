@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.anggrayudi.storage.SimpleStorageHelper;
 import com.pythonide.MainViewModel;
 import com.pythonide.R;
 import com.pythonide.editor.EditorActivity;
@@ -35,7 +34,6 @@ public class FileExplorerFragment extends Fragment {
     private FileExplorerAdapter adapter;
     private FileManager fileManager;
     private MainViewModel viewModel;
-    private SimpleStorageHelper storageHelper;
     
     private String currentPath;
     
@@ -46,9 +44,6 @@ public class FileExplorerFragment extends Fragment {
         
         fileManager = FileManager.getInstance();
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-        
-        storageHelper = new SimpleStorageHelper(this);
-        fileManager.init(requireContext(), storageHelper);
         
         // Set initial path
         currentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -276,15 +271,8 @@ public class FileExplorerFragment extends Fragment {
     }
     
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        storageHelper.onActivityResult(requestCode, resultCode, data);
-    }
-    
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, 
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        storageHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
