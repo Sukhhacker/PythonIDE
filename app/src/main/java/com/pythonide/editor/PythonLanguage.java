@@ -3,11 +3,14 @@ package com.pythonide.editor;
 import io.github.rosemoe.sora.lang.Language;
 import io.github.rosemoe.sora.lang.analysis.Analyzer;
 import io.github.rosemoe.sora.lang.analysis.StyleReceiver;
-import io.github.rosemoe.sora.lang.styling.Styles;
+import io.github.rosemoe.sora.lang.styling.Span;
+import io.github.rosemoe.sora.lang.styling.TextStyle;
 import io.github.rosemoe.sora.text.Content;
 import io.github.rosemoe.sora.text.TextReference;
 import io.github.rosemoe.sora.widget.CodeEditor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +35,7 @@ public class PythonLanguage implements Language {
     private static final Pattern FUNCTION_PATTERN = Pattern.compile(
             "\\bdef\\s+(\\w+)\\s*\\("
     );
-    
+
     private CodeEditor editor;
     
     public PythonLanguage(CodeEditor editor) {
@@ -61,12 +64,10 @@ public class PythonLanguage implements Language {
     
     @Override
     public void require(String name) {
-        // Not needed for basic implementation
     }
     
     @Override
     public void destroy() {
-        // Clean up resources
     }
     
     @Override
@@ -110,7 +111,6 @@ public class PythonLanguage implements Language {
         
         @Override
         public void reset(Content content, TextReference textRef) {
-            // Reset state
         }
         
         @Override
@@ -129,44 +129,44 @@ public class PythonLanguage implements Language {
             
             new Thread(() -> {
                 String text = content.toString();
-                Styles styles = new Styles();
+                List<Span> spans = new ArrayList<>();
                 
-                // Highlight keywords
+                // Highlight keywords (Orange)
                 Matcher keywordMatcher = KEYWORD_PATTERN.matcher(text);
                 while (keywordMatcher.find()) {
-                    styles.addSpan(keywordMatcher.start(), keywordMatcher.end(), 
-                            Styles.BOLD | Styles.FOREGROUND_COLOR, 0xffcc7832);
+                    spans.add(new Span(keywordMatcher.start(), keywordMatcher.end(), 
+                            TextStyle.makeStyle(TextStyle.BOLD, 0xffcc7832, 0)));
                 }
                 
-                // Highlight strings
+                // Highlight strings (Green)
                 Matcher stringMatcher = STRING_PATTERN.matcher(text);
                 while (stringMatcher.find()) {
-                    styles.addSpan(stringMatcher.start(), stringMatcher.end(),
-                            Styles.FOREGROUND_COLOR, 0xff6a8759);
+                    spans.add(new Span(stringMatcher.start(), stringMatcher.end(),
+                            TextStyle.makeStyle(TextStyle.NORMAL, 0xff6a8759, 0)));
                 }
                 
-                // Highlight comments
+                // Highlight comments (Gray Italic)
                 Matcher commentMatcher = COMMENT_PATTERN.matcher(text);
                 while (commentMatcher.find()) {
-                    styles.addSpan(commentMatcher.start(), commentMatcher.end(),
-                            Styles.ITALIC | Styles.FOREGROUND_COLOR, 0xff808080);
+                    spans.add(new Span(commentMatcher.start(), commentMatcher.end(),
+                            TextStyle.makeStyle(TextStyle.ITALIC, 0xff808080, 0)));
                 }
                 
-                // Highlight numbers
+                // Highlight numbers (Blue)
                 Matcher numberMatcher = NUMBER_PATTERN.matcher(text);
                 while (numberMatcher.find()) {
-                    styles.addSpan(numberMatcher.start(), numberMatcher.end(),
-                            Styles.FOREGROUND_COLOR, 0xff6897bb);
+                    spans.add(new Span(numberMatcher.start(), numberMatcher.end(),
+                            TextStyle.makeStyle(TextStyle.NORMAL, 0xff6897bb, 0)));
                 }
                 
-                // Highlight function names
+                // Highlight function names (Yellow)
                 Matcher functionMatcher = FUNCTION_PATTERN.matcher(text);
                 while (functionMatcher.find()) {
-                    styles.addSpan(functionMatcher.start(1), functionMatcher.end(1),
-                            Styles.FOREGROUND_COLOR, 0xffffc66d);
+                    spans.add(new Span(functionMatcher.start(1), functionMatcher.end(1),
+                            TextStyle.makeStyle(TextStyle.NORMAL, 0xffffc66d, 0)));
                 }
                 
-                receiver.setStyles(this, styles);
+                receiver.setStyles(this, spans);
                 
             }).start();
         }
